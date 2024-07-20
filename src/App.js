@@ -1,4 +1,5 @@
-import { memo, useState } from "react";
+import React, { memo, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import "./App.css";
 
 const chainsOption = [
@@ -57,6 +58,7 @@ const Modal = ({ show, options, onClose, onSelect }) => {
 };
 
 function App() {
+  const { control, setValue, handleSubmit } = useForm();
   const [chains, setChains] = useState(chainsOption);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -89,8 +91,15 @@ function App() {
       ...prev,
       [selectedItem]: option,
     }));
+
+    setValue(`chain_${selectedItem}`, option); // синхронизация с react-hook-form
+
     setShowModal(false);
     setSelectedItem(null);
+  };
+
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
   };
 
   return (
@@ -110,6 +119,29 @@ function App() {
         onClose={handleModalClose}
         onSelect={handleOptionSelect}
       />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {chains.map((item) => (
+          <Controller
+            key={item.id}
+            name={`chain_${item.id}`}
+            control={control}
+            render={({ field }) => (
+              <input
+                type="hidden"
+                {...field}
+                value={
+                  selectedOptions[item.id]
+                    ? `${selectedOptions[item.id].name} - ${
+                        selectedOptions[item.id].comment
+                      }`
+                    : ""
+                }
+              />
+            )}
+          />
+        ))}
+        <button type="submit">Log Form State</button>
+      </form>
     </div>
   );
 }
