@@ -11,8 +11,8 @@ const chainsOption = [
 
 const Chain = memo(({ item, selectedOption, onClick }) => {
   return (
-    <div className="chain_item" onClick={() => onClick(item)}>
-      {`Item №${item}`} <br />
+    <div className="chain_item" onClick={() => onClick(item.id)}>
+      {`Item №${item.id}`} <br />
       {selectedOption && (
         <div className="selected_option">
           Selected: {selectedOption.name} - {selectedOption.comment}
@@ -23,14 +23,28 @@ const Chain = memo(({ item, selectedOption, onClick }) => {
 });
 
 const Modal = ({ show, options, onClose, onSelect }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredOptions = options.filter(
+    (option) =>
+      option.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      option.comment.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (!show) return null;
 
   return (
     <div className="modal">
       <div className="modal_content">
-        <h2>Select an option</h2>
+        <h2>Select Chain</h2>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
         <ul>
-          {options.map((option) => (
+          {filteredOptions.map((option) => (
             <li key={option.id} onClick={() => onSelect(option)}>
               {option.name} - {option.comment}
             </li>
@@ -43,17 +57,25 @@ const Modal = ({ show, options, onClose, onSelect }) => {
 };
 
 function App() {
-  const [chains, setChains] = useState([1, 2, 3, 4, 5]);
+  const [chains, setChains] = useState(chainsOption);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const addChain = () => {
-    setChains((prev) => [...prev, prev.length + 1]);
+    const nextId = chains.length
+      ? Math.max(...chains.map((chain) => chain.id)) + 1
+      : 1;
+    const newChain = {
+      id: nextId,
+      name: `chain${nextId}`,
+      comment: `com${nextId}`,
+    };
+    setChains((prev) => [...prev, newChain]);
   };
 
-  const handleItemClick = (item) => {
-    setSelectedItem(item);
+  const handleItemClick = (id) => {
+    setSelectedItem(id);
     setShowModal(true);
   };
 
@@ -75,9 +97,9 @@ function App() {
     <div>
       {chains.map((item) => (
         <Chain
-          key={item}
+          key={item.id}
           item={item}
-          selectedOption={selectedOptions[item]}
+          selectedOption={selectedOptions[item.id]}
           onClick={handleItemClick}
         />
       ))}
