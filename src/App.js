@@ -1,6 +1,7 @@
-import React, { memo, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import "./App.css";
+import ChainWithForm from "./ChainWithForm"; // Импорт нового компонента
 
 const chainsOption = [
   { id: 1, name: "chain1", comment: "com1" },
@@ -9,19 +10,6 @@ const chainsOption = [
   { id: 4, name: "chain4", comment: "com4" },
   { id: 5, name: "chain5", comment: "com5" },
 ];
-
-const Chain = memo(({ item, selectedOption, onClick }) => {
-  return (
-    <div className="chain_item" onClick={() => onClick(item.id)}>
-      {`Item №${item.id}`} <br />
-      {selectedOption && (
-        <div className="selected_option">
-          Selected: {selectedOption.name} - {selectedOption.comment}
-        </div>
-      )}
-    </div>
-  );
-});
 
 const Modal = ({ show, options, onClose, onSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,7 +80,7 @@ function App() {
       [selectedItem]: option,
     }));
 
-    setValue(`chain_${selectedItem}`, option); // синхронизация с react-hook-form
+    setValue(`chain_${selectedItem}`, option);
 
     setShowModal(false);
     setSelectedItem(null);
@@ -105,11 +93,13 @@ function App() {
   return (
     <div>
       {chains.map((item) => (
-        <Chain
+        <ChainWithForm
           key={item.id}
           item={item}
           selectedOption={selectedOptions[item.id]}
           onClick={handleItemClick}
+          control={control}
+          selectedOptions={selectedOptions}
         />
       ))}
       <button onClick={addChain}>Add chain</button>
@@ -120,26 +110,6 @@ function App() {
         onSelect={handleOptionSelect}
       />
       <form onSubmit={handleSubmit(onSubmit)}>
-        {chains.map((item) => (
-          <Controller
-            key={item.id}
-            name={`chain_${item.id}`}
-            control={control}
-            render={({ field }) => (
-              <input
-                type="hidden"
-                {...field}
-                value={
-                  selectedOptions[item.id]
-                    ? `${selectedOptions[item.id].name} - ${
-                        selectedOptions[item.id].comment
-                      }`
-                    : ""
-                }
-              />
-            )}
-          />
-        ))}
         <button type="submit">Log Form State</button>
       </form>
     </div>
