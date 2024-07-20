@@ -117,3 +117,9 @@ function App() {
 }
 
 export default App;
+
+// Set default values for react-hook-form
+// savedChains.forEach((item) => {
+//   setValue(`chain_${item.id}`, savedSelectedOptions[item.id] || {});
+// });
+// }, [setValue]);
