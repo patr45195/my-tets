@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import "./App.css";
-import ChainWithForm from "./ChainWithForm"; // Импорт нового компонента
+import ChainWithForm from "./ChainWithForm"; // Import the ChainWithForm component
 
 const chainsOption = [
   { id: 1, name: "chain1", comment: "com1" },
@@ -52,6 +52,8 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
+  const chainRefs = useRef([]);
+
   const addChain = () => {
     const nextId = chains.length
       ? Math.max(...chains.map((chain) => chain.id)) + 1
@@ -62,6 +64,13 @@ function App() {
       comment: `com${nextId}`,
     };
     setChains((prev) => [...prev, newChain]);
+
+    setTimeout(() => {
+      const newChainRef = chainRefs.current[nextId - 1];
+      if (newChainRef) {
+        newChainRef.click();
+      }
+    }, 0);
   };
 
   const handleItemClick = (id) => {
@@ -92,7 +101,7 @@ function App() {
 
   return (
     <div>
-      {chains.map((item) => (
+      {chains.map((item, index) => (
         <ChainWithForm
           key={item.id}
           item={item}
@@ -100,6 +109,7 @@ function App() {
           onClick={handleItemClick}
           control={control}
           selectedOptions={selectedOptions}
+          ref={(el) => (chainRefs.current[index] = el)}
         />
       ))}
       <button onClick={addChain}>Add chain</button>
@@ -117,7 +127,6 @@ function App() {
 }
 
 export default App;
-
 // Set default values for react-hook-form
 // savedChains.forEach((item) => {
 //   setValue(`chain_${item.id}`, savedSelectedOptions[item.id] || {});
