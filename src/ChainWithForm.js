@@ -1,5 +1,5 @@
-import React, { forwardRef } from "react";
-import { Controller } from "react-hook-form";
+import React, { forwardRef } from "react"
+import { Controller } from "react-hook-form"
 
 const ChainWithForm = forwardRef(
   ({ item, selectedOption, onClick, control, selectedOptions }, ref) => {
@@ -25,8 +25,8 @@ const ChainWithForm = forwardRef(
           )}
         />
       </div>
-    );
-  }
-);
+    )
+  },
+)
 
-export default ChainWithForm;
+export default ChainWithForm

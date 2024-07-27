@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import "./App.css";
-import ChainWithForm from "./ChainWithForm"; // Import the ChainWithForm component
+import React, { useRef, useState } from "react"
+import { useForm } from "react-hook-form"
+import "./App.css"
+import ChainWithForm from "./ChainWithForm" // Import the ChainWithForm component
 
 const chainsOption = [
   { id: 1, name: "chain1", comment: "com1" },
@@ -9,18 +9,18 @@ const chainsOption = [
   { id: 3, name: "chain3", comment: "com3" },
   { id: 4, name: "chain4", comment: "com4" },
   { id: 5, name: "chain5", comment: "com5" },
-];
+]
 
 const Modal = ({ show, options, onClose, onSelect }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("")
 
   const filteredOptions = options.filter(
     (option) =>
       option.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      option.comment.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      option.comment.toLowerCase().includes(searchQuery.toLowerCase()),
+  )
 
-  if (!show) return null;
+  if (!show) return null
 
   return (
     <div className="modal">
@@ -42,62 +42,62 @@ const Modal = ({ show, options, onClose, onSelect }) => {
         <button onClick={onClose}>Close</button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 function App() {
-  const { control, setValue, handleSubmit } = useForm();
-  const [chains, setChains] = useState(chainsOption);
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [showModal, setShowModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const { control, setValue, handleSubmit } = useForm()
+  const [chains, setChains] = useState(chainsOption)
+  const [selectedOptions, setSelectedOptions] = useState({})
+  const [showModal, setShowModal] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(null)
 
-  const chainRefs = useRef([]);
+  const chainRefs = useRef([])
 
   const addChain = () => {
     const nextId = chains.length
       ? Math.max(...chains.map((chain) => chain.id)) + 1
-      : 1;
+      : 1
     const newChain = {
       id: nextId,
       name: `chain${nextId}`,
       comment: `com${nextId}`,
-    };
-    setChains((prev) => [...prev, newChain]);
+    }
+    setChains((prev) => [...prev, newChain])
 
     setTimeout(() => {
-      const newChainRef = chainRefs.current[nextId - 1];
+      const newChainRef = chainRefs.current[nextId - 1]
       if (newChainRef) {
-        newChainRef.click();
+        newChainRef.click()
       }
-    }, 0);
-  };
+    }, 0)
+  }
 
   const handleItemClick = (id) => {
-    setSelectedItem(id);
-    setShowModal(true);
-  };
+    setSelectedItem(id)
+    setShowModal(true)
+  }
 
   const handleModalClose = () => {
-    setShowModal(false);
-    setSelectedItem(null);
-  };
+    setShowModal(false)
+    setSelectedItem(null)
+  }
 
   const handleOptionSelect = (option) => {
     setSelectedOptions((prev) => ({
       ...prev,
       [selectedItem]: option,
-    }));
+    }))
 
-    setValue(`chain_${selectedItem}`, option);
+    setValue(`chain_${selectedItem}`, option)
 
-    setShowModal(false);
-    setSelectedItem(null);
-  };
+    setShowModal(false)
+    setSelectedItem(null)
+  }
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
-  };
+    console.log("Form Data:", data)
+  }
 
   return (
     <div>
@@ -123,10 +123,10 @@ function App() {
         <button type="submit">Log Form State</button>
       </form>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
 // Set default values for react-hook-form
 // savedChains.forEach((item) => {
 //   setValue(`chain_${item.id}`, savedSelectedOptions[item.id] || {});
